@@ -177,16 +177,16 @@ smoke-test:
   <<: *rules_default_branch_only
   script:
     - |
-      for i in $(seq 1 30); do
+      for i in $(seq 1 50); do
         STATUS=$(curl -s -o /dev/null -w "%{http_code}" "http://$ALB_DNS_NAME/health")
         if [ "$STATUS" = "200" ]; then
-          echo "Health check passed"
+          echo "Smoke test passed on attempt $i"
           exit 0
         fi
-        echo "Attempt $i: got $STATUS, retrying in 15s..."
-        sleep 15
+        echo "Attempt $i/50: got $STATUS, retrying in 20s..."
+        sleep 20
       done
-      echo "Smoke test failed after 30 attempts"
+      echo "Smoke test failed after 50 attempts (~17 minutes)"
       exit 1
   environment:
     name: production

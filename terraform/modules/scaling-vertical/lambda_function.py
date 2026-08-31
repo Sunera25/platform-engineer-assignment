@@ -34,9 +34,9 @@ def lambda_handler(event, context):
         current_cpu = int(task_def.get('cpu', '256'))
         current_memory = int(task_def.get('memory', '512'))
 
-        # Double allocation each trigger, capped at reasonable maximums
-        new_cpu = min(current_cpu * 2, 2048)
-        new_memory = min(current_memory * 2, 4096)
+        # Double allocation each trigger, capped below t3.micro registered memory (940 MiB)
+        new_cpu = min(current_cpu * 2, 1024)
+        new_memory = min(current_memory * 2, 768)
 
         logger.info(
             f"Scaling from CPU={current_cpu} Memory={current_memory} "

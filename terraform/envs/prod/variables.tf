@@ -84,7 +84,7 @@ variable "task_memory" {
 variable "ecs_desired_count" {
   type        = number
   description = "Desired number of running TaskFlow tasks"
-  default     = 2
+  default     = 1
 }
 
 variable "db_instance_class" {
