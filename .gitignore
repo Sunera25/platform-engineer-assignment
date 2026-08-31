@@ -1,0 +1,48 @@
+# Terraform state — never commit
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars.local
+
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+*_rsa
+*_dsa
+*_ecdsa
+*_ed25519
+*.p12
+*.pfx
+credentials
+aws-credentials
+
+# Lambda build artifacts (generated at plan time)
+terraform/modules/scaling-vertical/lambda_function.zip
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node (if app uses Node)
+node_modules/
+
+# Docker
+*.tar
