@@ -40,14 +40,18 @@ terraform-lint:
 
 checkov:
   stage: security
-  image: bridgecrew/checkov:latest
+  image:
+    name: bridgecrew/checkov:latest
+    entrypoint: [""]
   <<: *rules_always
   script:
     - checkov -d terraform/ --framework terraform --quiet
 
 trivy:
   stage: security
-  image: aquasec/trivy:latest
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
   <<: *rules_always
   script:
     - trivy fs app/ --exit-code 1 --severity HIGH,CRITICAL --no-progress
