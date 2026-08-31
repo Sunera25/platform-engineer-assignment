@@ -1,9 +1,11 @@
-# Terraform state — never commit
+# Terraform state and plans — never commit
 *.tfstate
 *.tfstate.*
 .terraform/
 .terraform.lock.hcl
 terraform.tfvars.local
+tfplan
+*.tfplan
 
 # Secrets and credentials
 .env
