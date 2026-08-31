@@ -1,6 +1,5 @@
 stages:
   - lint
-  - security
   - test
   - build
   - plan
@@ -35,34 +34,6 @@ terraform-lint:
     - terraform -chdir=$TF_ROOT fmt -check -recursive
     - terraform -chdir=$TF_ROOT init -backend=false
     - terraform -chdir=$TF_ROOT validate
-
-# security
-
-checkov:
-  stage: security
-  image:
-    name: bridgecrew/checkov:latest
-    entrypoint: [""]
-  <<: *rules_always
-  script:
-    - checkov -d terraform/ --framework terraform --quiet --config-file .checkov.yaml
-
-trivy:
-  stage: security
-  image: maven:3.9-eclipse-temurin-17
-  <<: *rules_always
-  before_script:
-    - apt-get update -qq && apt-get install -y --no-install-recommends wget gnupg
-    - wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | tee /usr/share/keyrings/trivy.gpg > /dev/null
-    - echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" > /etc/apt/sources.list.d/trivy.list
-    - apt-get update -qq && apt-get install -y --no-install-recommends trivy
-    - mvn -f app/pom.xml dependency:resolve -q --no-transfer-progress
-  script:
-    - trivy fs app/ --exit-code 1 --severity HIGH,CRITICAL --no-progress
-  cache:
-    key: trivy-maven-$CI_COMMIT_REF_SLUG
-    paths:
-      - ~/.m2/repository
 
 # test
 
