@@ -141,6 +141,10 @@ ecs-deploy:
         --service prod-taskflow-service
         --force-new-deployment
         --region $AWS_DEFAULT_REGION
+    - aws ecs wait services-stable
+        --cluster $ECS_CLUSTER_NAME
+        --services prod-taskflow-service
+        --region $AWS_DEFAULT_REGION
   environment:
     name: production
 
@@ -152,16 +156,16 @@ smoke-test:
   <<: *rules_default_branch_only
   script:
     - |
-      for i in $(seq 1 12); do
+      for i in $(seq 1 30); do
         STATUS=$(curl -s -o /dev/null -w "%{http_code}" "http://$ALB_DNS_NAME/health")
         if [ "$STATUS" = "200" ]; then
           echo "Health check passed"
           exit 0
         fi
-        echo "Attempt $i: got $STATUS, retrying in 10s..."
-        sleep 10
+        echo "Attempt $i: got $STATUS, retrying in 15s..."
+        sleep 15
       done
-      echo "Smoke test failed after 12 attempts"
+      echo "Smoke test failed after 30 attempts"
       exit 1
   environment:
     name: production

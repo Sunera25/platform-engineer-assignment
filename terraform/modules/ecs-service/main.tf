@@ -70,7 +70,10 @@ resource "aws_ecs_service" "app" {
   task_definition                   = aws_ecs_task_definition.app.arn
   desired_count                     = var.desired_count
   launch_type                       = "EC2"
-  health_check_grace_period_seconds = 60
+  health_check_grace_period_seconds = 180
+
+  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 100
 
   load_balancer {
     target_group_arn = var.target_group_arn
