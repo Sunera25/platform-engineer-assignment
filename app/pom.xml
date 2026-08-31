@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
+        <version>3.4.5</version>
         <relativePath/>
     </parent>
 
@@ -19,10 +19,26 @@
 
     <properties>
         <java.version>17</java.version>
-        <springdoc.version>2.5.0</springdoc.version>
-        <logstash-encoder.version>7.4</logstash-encoder.version>
+        <springdoc.version>2.8.5</springdoc.version>
+        <logstash-encoder.version>8.0</logstash-encoder.version>
         <jacoco.minimum.coverage>0.70</jacoco.minimum.coverage>
+        <!-- Explicit security patches — override Spring Boot managed versions -->
+        <spring-framework.version>6.2.19</spring-framework.version>
+        <tomcat.version>10.1.55</tomcat.version>
+        <postgresql.version>42.7.11</postgresql.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>2.18.8</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
