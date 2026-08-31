@@ -141,10 +141,6 @@ ecs-deploy:
         --service prod-taskflow-service
         --force-new-deployment
         --region $AWS_DEFAULT_REGION
-    - aws ecs wait services-stable
-        --cluster $ECS_CLUSTER_NAME
-        --services prod-taskflow-service
-        --region $AWS_DEFAULT_REGION
   environment:
     name: production
 
