@@ -1,0 +1,10 @@
+---
+- name: Configure TaskFlow ECS hosts
+  hosts: role_ecs_host
+  become: true
+
+  roles:
+    - hardening
+    - docker
+    - ecs_agent
+    - cloudwatch_agent
