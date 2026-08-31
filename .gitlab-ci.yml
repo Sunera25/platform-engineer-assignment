@@ -52,7 +52,10 @@ trivy:
   image: maven:3.9-eclipse-temurin-17
   <<: *rules_always
   before_script:
-    - curl -sfL https://raw.githubusercontent.com/aquasec/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+    - apt-get update -qq && apt-get install -y --no-install-recommends wget gnupg
+    - wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | tee /usr/share/keyrings/trivy.gpg > /dev/null
+    - echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" > /etc/apt/sources.list.d/trivy.list
+    - apt-get update -qq && apt-get install -y --no-install-recommends trivy
     - mvn -f app/pom.xml dependency:resolve -q --no-transfer-progress
   script:
     - trivy fs app/ --exit-code 1 --severity HIGH,CRITICAL --no-progress
