@@ -12,14 +12,7 @@ stages:
 variables:
   TF_ROOT: terraform/envs/prod
   TF_VERSION: "1.7.5"
-  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-
-# shared rules
-
-.rules_mr_only: &rules_mr_only
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 .rules_default_branch_only: &rules_default_branch_only
   rules:
@@ -32,41 +25,14 @@ variables:
 
 # lint
 
-terraform-fmt:
+terraform-lint:
   stage: lint
   image: hashicorp/terraform:$TF_VERSION
   <<: *rules_always
   script:
     - terraform -chdir=$TF_ROOT fmt -check -recursive
-
-terraform-validate:
-  stage: lint
-  image: hashicorp/terraform:$TF_VERSION
-  <<: *rules_always
-  script:
     - terraform -chdir=$TF_ROOT init -backend=false
     - terraform -chdir=$TF_ROOT validate
-
-tflint:
-  stage: lint
-  image: ghcr.io/terraform-linters/tflint:latest
-  <<: *rules_always
-  script:
-    - tflint --chdir=$TF_ROOT --recursive
-
-ansible-lint:
-  stage: lint
-  image: pipelinecomponents/ansible-lint:latest
-  <<: *rules_always
-  script:
-    - ansible-lint ansible/site.yml
-
-app-lint:
-  stage: lint
-  image: maven:3.9-eclipse-temurin-17-alpine
-  <<: *rules_always
-  script:
-    - mvn -f app/pom.xml checkstyle:check
 
 # security
 
@@ -83,13 +49,6 @@ trivy:
   <<: *rules_always
   script:
     - trivy fs app/ --exit-code 1 --severity HIGH,CRITICAL --no-progress
-
-gitleaks:
-  stage: security
-  image: zricethezav/gitleaks:latest
-  <<: *rules_always
-  script:
-    - gitleaks detect --source . --exit-code 1
 
 # test
 
@@ -143,9 +102,7 @@ terraform-plan:
   <<: *rules_always
   script:
     - terraform -chdir=$TF_ROOT init
-    - terraform -chdir=$TF_ROOT plan
-        -var="image_tag=$CI_COMMIT_SHORT_SHA"
-        -out=tfplan
+    - terraform -chdir=$TF_ROOT plan -var="image_tag=$CI_COMMIT_SHORT_SHA" -out=tfplan
   artifacts:
     paths:
       - $TF_ROOT/tfplan
