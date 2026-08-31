@@ -138,7 +138,7 @@ ecs-deploy:
   script:
     - aws ecs update-service
         --cluster $ECS_CLUSTER_NAME
-        --service taskflow-service
+        --service prod-taskflow-service
         --force-new-deployment
         --region $AWS_DEFAULT_REGION
   environment:
