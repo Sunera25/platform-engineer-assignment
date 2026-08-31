@@ -1,0 +1,15 @@
+---
+- name: Restart SSHD
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+
+- name: Restart yum-cron
+  ansible.builtin.systemd:
+    name: yum-cron
+    state: restarted
+
+- name: Reload firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    state: reloaded

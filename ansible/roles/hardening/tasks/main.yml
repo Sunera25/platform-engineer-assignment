@@ -1,0 +1,71 @@
+---
+- name: Enable automatic security updates via yum-cron
+  ansible.builtin.yum:
+    name: yum-cron
+    state: present
+
+- name: Configure yum-cron to apply security updates automatically
+  ansible.builtin.lineinfile:
+    path: /etc/yum/yum-cron.conf
+    regexp: "^apply_updates"
+    line: "apply_updates = yes"
+  notify: Restart yum-cron
+
+- name: Configure yum-cron update_cmd to security only
+  ansible.builtin.lineinfile:
+    path: /etc/yum/yum-cron.conf
+    regexp: "^update_cmd"
+    line: "update_cmd = security"
+  notify: Restart yum-cron
+
+- name: Start and enable yum-cron
+  ansible.builtin.systemd:
+    name: yum-cron
+    state: started
+    enabled: true
+
+- name: Disable password-based SSH authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    validate: sshd -t -f %s
+  notify: Restart SSHD
+
+- name: Disable root SSH login
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?PermitRootLogin"
+    line: "PermitRootLogin no"
+    validate: sshd -t -f %s
+  notify: Restart SSHD
+
+- name: Install firewalld
+  ansible.builtin.yum:
+    name: firewalld
+    state: present
+
+- name: Start and enable firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Allow SSH through firewall
+  ansible.posix.firewalld:
+    service: ssh
+    permanent: true
+    state: enabled
+  notify: Reload firewalld
+
+- name: Allow HTTP through firewall for ECS health checks
+  ansible.posix.firewalld:
+    port: 8080/tcp
+    permanent: true
+    state: enabled
+  notify: Reload firewalld
+
+- name: Set default firewall zone to drop
+  ansible.builtin.command:
+    cmd: firewall-cmd --set-default-zone=drop
+  changed_when: false
