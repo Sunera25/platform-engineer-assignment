@@ -27,7 +27,9 @@ variables:
 
 terraform-lint:
   stage: lint
-  image: hashicorp/terraform:$TF_VERSION
+  image:
+    name: hashicorp/terraform:$TF_VERSION
+    entrypoint: [""]
   <<: *rules_always
   script:
     - terraform -chdir=$TF_ROOT fmt -check -recursive
@@ -98,7 +100,9 @@ build-and-push:
 
 terraform-plan:
   stage: plan
-  image: hashicorp/terraform:$TF_VERSION
+  image:
+    name: hashicorp/terraform:$TF_VERSION
+    entrypoint: [""]
   <<: *rules_always
   script:
     - terraform -chdir=$TF_ROOT init
@@ -112,7 +116,9 @@ terraform-plan:
 
 terraform-apply:
   stage: apply
-  image: hashicorp/terraform:$TF_VERSION
+  image:
+    name: hashicorp/terraform:$TF_VERSION
+    entrypoint: [""]
   <<: *rules_default_branch_only
   when: manual
   environment:
