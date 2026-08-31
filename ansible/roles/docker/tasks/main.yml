@@ -1,0 +1,33 @@
+---
+- name: Install required packages for Docker repo
+  ansible.builtin.yum:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+    state: present
+
+- name: Add Docker CE repository
+  ansible.builtin.command:
+    cmd: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    creates: /etc/yum.repos.d/docker-ce.repo
+
+- name: Install Docker CE
+  ansible.builtin.yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+
+- name: Start and enable Docker service
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add ec2-user to docker group
+  ansible.builtin.user:
+    name: ec2-user
+    groups: docker
+    append: true
