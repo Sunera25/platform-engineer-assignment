@@ -43,7 +43,6 @@ variable "app_port" {
 variable "image_tag" {
   type        = string
   description = "Container image tag — must be a Git commit SHA, never 'latest'"
-  default     = "prod-commit-sha-12345"
 }
 
 variable "instance_type" {
