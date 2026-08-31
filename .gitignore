@@ -46,3 +46,6 @@ node_modules/
 
 # Docker
 *.tar
+
+# Local files directory (IAM policies, keys — never commit)
+files/
