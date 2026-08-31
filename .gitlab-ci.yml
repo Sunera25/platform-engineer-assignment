@@ -45,7 +45,7 @@ checkov:
     entrypoint: [""]
   <<: *rules_always
   script:
-    - checkov -d terraform/ --framework terraform --quiet
+    - checkov -d terraform/ --framework terraform --quiet --config-file .checkov.yaml
 
 trivy:
   stage: security

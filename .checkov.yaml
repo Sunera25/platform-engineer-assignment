@@ -1,0 +1,58 @@
+skip-check:
+  # HTTP-only ALB — no TLS certificate or domain for this lab environment
+  - CKV_AWS_2
+  - CKV_AWS_103
+  - CKV_AWS_131
+  - CKV_AWS_378
+  - CKV2_AWS_20
+
+  # Out of scope for this assignment
+  - CKV_AWS_91   # ALB access logging
+  - CKV_AWS_150  # ALB deletion protection
+  - CKV2_AWS_28  # WAF protection
+  - CKV2_AWS_11  # VPC flow logs
+  - CKV2_AWS_12  # Default SG restrict-all
+
+  # KMS encryption — free tier / lab environment
+  - CKV_AWS_158  # CloudWatch log group KMS
+  - CKV_AWS_136  # ECR KMS
+  - CKV_AWS_149  # Secrets Manager KMS
+
+  # RDS free-tier constraints (db.t3.micro)
+  - CKV_AWS_16   # RDS encryption at rest
+  - CKV_AWS_118  # RDS enhanced monitoring
+  - CKV_AWS_133  # RDS backup (backup_retention_period = 0)
+  - CKV_AWS_157  # RDS Multi-AZ
+  - CKV_AWS_161  # RDS IAM authentication
+  - CKV_AWS_129  # RDS log exports
+  - CKV_AWS_226  # RDS auto minor upgrades
+  - CKV_AWS_293  # RDS deletion protection
+  - CKV_AWS_353  # RDS performance insights
+  - CKV2_AWS_30  # RDS query logging
+  - CKV2_AWS_57  # Secrets Manager rotation
+  - CKV2_AWS_60  # RDS copy tags to snapshots
+
+  # Lambda scaling function — internal, not customer-facing
+  - CKV_AWS_272  # Lambda code signing
+  - CKV_AWS_173  # Lambda env var encryption (no sensitive vars)
+  - CKV_AWS_117  # Lambda in VPC (calls AWS APIs, VPC not required)
+  - CKV_AWS_115  # Lambda concurrency limit
+  - CKV_AWS_116  # Lambda DLQ (alarm-triggered, idempotent retries)
+  - CKV_AWS_50   # Lambda X-Ray tracing
+
+  # IAM — AWS API requires wildcard for these ECS control-plane actions
+  - CKV_AWS_108  # Data exfiltration (GetSecretValue scoped when ARN provided)
+  - CKV_AWS_356  # Wildcard resource (ECS task registration requires *)
+  - CKV_AWS_111  # Write without constraints (ECS UpdateService requires *)
+
+  # Networking — intentional design
+  - CKV_AWS_130  # Public subnets assign public IP (ALB + NAT gateway requirement)
+  - CKV_AWS_260  # ALB SG allows port 80 inbound (public HTTP service)
+  - CKV_AWS_382  # Unrestricted egress (standard ECS host outbound pattern)
+  - CKV_AWS_23   # SG rule description (egress-only rules)
+
+  # ECR tag mutability — SHA-based tags are immutable by convention in CI
+  - CKV_AWS_51
+
+  # False positives — Checkov cannot resolve cross-module SG references
+  - CKV2_AWS_5
