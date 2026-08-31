@@ -49,12 +49,17 @@ checkov:
 
 trivy:
   stage: security
-  image:
-    name: aquasec/trivy:latest
-    entrypoint: [""]
+  image: maven:3.9-eclipse-temurin-17
   <<: *rules_always
+  before_script:
+    - curl -sfL https://raw.githubusercontent.com/aquasec/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+    - mvn -f app/pom.xml dependency:resolve -q --no-transfer-progress
   script:
     - trivy fs app/ --exit-code 1 --severity HIGH,CRITICAL --no-progress
+  cache:
+    key: trivy-maven-$CI_COMMIT_REF_SLUG
+    paths:
+      - ~/.m2/repository
 
 # test
 
