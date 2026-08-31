@@ -23,9 +23,8 @@ resource "aws_db_instance" "main" {
   vpc_security_group_ids = [var.rds_security_group_id]
   publicly_accessible    = false
 
-  backup_retention_period = 7
-  # skip_final_snapshot = true is acceptable for this exercise; set false for production data
-  skip_final_snapshot = true
+  backup_retention_period = 0
+  skip_final_snapshot     = true
 
   tags = merge(var.tags, {
     Name = "${var.environment}-taskflow-rds"

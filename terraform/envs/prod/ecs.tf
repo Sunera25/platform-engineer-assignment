@@ -26,4 +26,6 @@ module "ecs_service" {
     ManagedBy   = "terraform"
     Component   = "ecs-service"
   }
+
+  depends_on = [module.alb]
 }
