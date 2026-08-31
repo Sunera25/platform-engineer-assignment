@@ -1,0 +1,26 @@
+---
+- name: Download CloudWatch agent RPM
+  ansible.builtin.get_url:
+    url: https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
+    dest: /tmp/amazon-cloudwatch-agent.rpm
+    mode: "0644"
+
+- name: Install CloudWatch agent
+  ansible.builtin.yum:
+    name: /tmp/amazon-cloudwatch-agent.rpm
+    state: present
+
+- name: Deploy CloudWatch agent configuration
+  ansible.builtin.template:
+    src: amazon-cloudwatch-agent.json.j2
+    dest: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart CloudWatch agent
+
+- name: Start and enable CloudWatch agent
+  ansible.builtin.systemd:
+    name: amazon-cloudwatch-agent
+    state: started
+    enabled: true
