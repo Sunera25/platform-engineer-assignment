@@ -1,0 +1,21 @@
+plugin: amazon.aws.aws_ec2
+regions:
+  - "{{ lookup('env', 'AWS_DEFAULT_REGION') | default('us-east-1') }}"
+
+filters:
+  tag:Project: taskflow
+  tag:Environment: prod
+  instance-state-name: running
+
+keyed_groups:
+  - key: tags.Role
+    prefix: role
+  - key: tags.Environment
+    prefix: env
+
+compose:
+  ansible_host: private_ip_address
+
+hostnames:
+  - tag:Name
+  - instance-id

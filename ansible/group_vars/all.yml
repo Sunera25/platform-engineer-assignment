@@ -1,0 +1,4 @@
+aws_region: "{{ lookup('env', 'AWS_DEFAULT_REGION') | default('us-east-1') }}"
+ecs_cluster_name: "{{ lookup('env', 'ECS_CLUSTER_NAME') | default('taskflow-prod') }}"
+
+cloudwatch_agent_config_ssm_param: "/taskflow/prod/cloudwatch-agent-config"
