@@ -26,10 +26,14 @@ resource "aws_lambda_function" "vertical_scaling" {
   })
 }
 
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 resource "aws_lambda_permission" "cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatchAlarms"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.vertical_scaling.function_name
-  # Correct principal for CloudWatch Alarms direct Lambda invocation (not alarms.amazonaws.com)
-  principal = "lambda.alarms.cloudwatch.amazonaws.com"
+  principal     = "lambda.alarms.cloudwatch.amazonaws.com"
+  # Scoped to CloudWatch alarms in this account/region — prevents cross-account invocation
+  source_arn = "arn:aws:cloudwatch:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alarm:*"
 }

@@ -26,6 +26,9 @@ AVD-AWS-0050
 AVD-AWS-0051
 AVD-AWS-0066
 
-# Networking — intentional design (public subnets for ALB, open egress for ECS)
+# Networking — intentional design (public subnets for ALB, open egress for ECS hosts)
+# Trivy uses both AVD-AWS-* and AWS-* IDs — list both forms
 AVD-AWS-0102
 AVD-AWS-0105
+AWS-0104
+AWS-0164

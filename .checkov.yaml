@@ -56,3 +56,7 @@ skip-check:
 
   # False positives — Checkov cannot resolve cross-module SG references
   - CKV2_AWS_5
+
+  # OpenAPI — internal API, no authentication layer for this assignment
+  - CKV_OPENAPI_4   # Global security field (no auth by design)
+  - CKV_OPENAPI_5   # Security operations empty (no auth by design)
