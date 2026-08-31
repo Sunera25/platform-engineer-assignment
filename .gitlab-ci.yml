@@ -1,0 +1,218 @@
+stages:
+  - lint
+  - security
+  - test
+  - build
+  - plan
+  - apply
+  - configure
+  - deploy
+  - smoke-test
+
+variables:
+  TF_ROOT: terraform/envs/prod
+  TF_VERSION: "1.7.5"
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+
+# shared rules
+
+.rules_mr_only: &rules_mr_only
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+.rules_default_branch_only: &rules_default_branch_only
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+.rules_always: &rules_always
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# lint
+
+terraform-fmt:
+  stage: lint
+  image: hashicorp/terraform:$TF_VERSION
+  <<: *rules_always
+  script:
+    - terraform -chdir=$TF_ROOT fmt -check -recursive
+
+terraform-validate:
+  stage: lint
+  image: hashicorp/terraform:$TF_VERSION
+  <<: *rules_always
+  script:
+    - terraform -chdir=$TF_ROOT init -backend=false
+    - terraform -chdir=$TF_ROOT validate
+
+tflint:
+  stage: lint
+  image: ghcr.io/terraform-linters/tflint:latest
+  <<: *rules_always
+  script:
+    - tflint --chdir=$TF_ROOT --recursive
+
+ansible-lint:
+  stage: lint
+  image: pipelinecomponents/ansible-lint:latest
+  <<: *rules_always
+  script:
+    - ansible-lint ansible/site.yml
+
+app-lint:
+  stage: lint
+  image: maven:3.9-eclipse-temurin-17-alpine
+  <<: *rules_always
+  script:
+    - mvn -f app/pom.xml checkstyle:check
+
+# security
+
+checkov:
+  stage: security
+  image: bridgecrew/checkov:latest
+  <<: *rules_always
+  script:
+    - checkov -d terraform/ --framework terraform --quiet
+
+trivy:
+  stage: security
+  image: aquasec/trivy:latest
+  <<: *rules_always
+  script:
+    - trivy fs app/ --exit-code 1 --severity HIGH,CRITICAL --no-progress
+
+gitleaks:
+  stage: security
+  image: zricethezav/gitleaks:latest
+  <<: *rules_always
+  script:
+    - gitleaks detect --source . --exit-code 1
+
+# test
+
+unit-and-integration-tests:
+  stage: test
+  image: maven:3.9-eclipse-temurin-17
+  services:
+    - name: postgres:15-alpine
+      alias: postgres
+  variables:
+    POSTGRES_DB: taskflow
+    POSTGRES_USER: taskflow_admin
+    POSTGRES_PASSWORD: password
+    TEST_DB_HOST: postgres
+    TEST_DB_NAME: taskflow
+    TEST_DB_USER: taskflow_admin
+    TEST_DB_PASSWORD: password
+  <<: *rules_always
+  script:
+    - mvn -f app/pom.xml verify
+  artifacts:
+    when: always
+    reports:
+      junit: app/target/surefire-reports/TEST-*.xml
+    paths:
+      - app/target/site/jacoco/
+
+# build
+
+build-and-push:
+  stage: build
+  image: docker:24
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  <<: *rules_always
+  before_script:
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION
+      | docker login --username AWS --password-stdin $ECR_REGISTRY
+  script:
+    - docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$CI_COMMIT_SHORT_SHA app/
+    - docker push $ECR_REGISTRY/$ECR_REPOSITORY:$CI_COMMIT_SHORT_SHA
+
+# plan
+
+terraform-plan:
+  stage: plan
+  image: hashicorp/terraform:$TF_VERSION
+  <<: *rules_always
+  script:
+    - terraform -chdir=$TF_ROOT init
+    - terraform -chdir=$TF_ROOT plan
+        -var="image_tag=$CI_COMMIT_SHORT_SHA"
+        -out=tfplan
+  artifacts:
+    paths:
+      - $TF_ROOT/tfplan
+    expire_in: 1 week
+
+# apply (manual gate, default branch only)
+
+terraform-apply:
+  stage: apply
+  image: hashicorp/terraform:$TF_VERSION
+  <<: *rules_default_branch_only
+  when: manual
+  environment:
+    name: production
+  script:
+    - terraform -chdir=$TF_ROOT init
+    - terraform -chdir=$TF_ROOT apply -var="image_tag=$CI_COMMIT_SHORT_SHA" -auto-approve
+  dependencies:
+    - terraform-plan
+
+# configure
+
+ansible-configure:
+  stage: configure
+  image: python:3.11-slim
+  <<: *rules_default_branch_only
+  before_script:
+    - pip install ansible boto3 botocore
+    - ansible-galaxy collection install -r ansible/requirements.yml
+  script:
+    - ansible-playbook ansible/site.yml
+  environment:
+    name: production
+
+# deploy
+
+ecs-deploy:
+  stage: deploy
+  image: amazon/aws-cli:latest
+  <<: *rules_default_branch_only
+  script:
+    - aws ecs update-service
+        --cluster $ECS_CLUSTER_NAME
+        --service taskflow-service
+        --force-new-deployment
+        --region $AWS_DEFAULT_REGION
+  environment:
+    name: production
+
+# smoke-test
+
+smoke-test:
+  stage: smoke-test
+  image: curlimages/curl:latest
+  <<: *rules_default_branch_only
+  script:
+    - |
+      for i in $(seq 1 12); do
+        STATUS=$(curl -s -o /dev/null -w "%{http_code}" "http://$ALB_DNS_NAME/health")
+        if [ "$STATUS" = "200" ]; then
+          echo "Health check passed"
+          exit 0
+        fi
+        echo "Attempt $i: got $STATUS, retrying in 10s..."
+        sleep 10
+      done
+      echo "Smoke test failed after 12 attempts"
+      exit 1
+  environment:
+    name: production
