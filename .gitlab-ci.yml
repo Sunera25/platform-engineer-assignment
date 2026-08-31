@@ -131,7 +131,9 @@ ansible-configure:
 
 ecs-deploy:
   stage: deploy
-  image: amazon/aws-cli:latest
+  image:
+    name: amazon/aws-cli:latest
+    entrypoint: [""]
   <<: *rules_default_branch_only
   script:
     - aws ecs update-service
