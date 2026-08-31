@@ -74,8 +74,6 @@ build-and-push:
     entrypoint: [""]
   <<: *rules_always
   script:
-    - mkdir -p /kaniko/.docker
-    - echo "{\"credHelpers\":{\"${ECR_REGISTRY}\":\"ecr-login\"}}" > /kaniko/.docker/config.json
     - /kaniko/executor
         --context "${CI_PROJECT_DIR}/app"
         --dockerfile "${CI_PROJECT_DIR}/app/Dockerfile"
