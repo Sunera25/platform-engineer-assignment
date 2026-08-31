@@ -1,0 +1,31 @@
+# HTTP-only ALB — no TLS certificate or domain for this lab environment
+AVD-AWS-0053
+AVD-AWS-0054
+AVD-AWS-0070
+
+# ALB access logging / deletion protection — out of scope for lab
+AVD-AWS-0083
+AVD-AWS-0052
+
+# RDS free-tier constraints (db.t3.micro, no Multi-AZ, no encryption)
+AVD-AWS-0077
+AVD-AWS-0078
+AVD-AWS-0079
+AVD-AWS-0080
+AVD-AWS-0133
+AVD-AWS-0180
+
+# CloudWatch log group KMS — free tier / lab environment
+AVD-AWS-0017
+
+# ECR tag mutability — SHA-based tags are immutable by convention in CI
+AVD-AWS-0031
+
+# Lambda out of scope (vertical scaling function is internal)
+AVD-AWS-0050
+AVD-AWS-0051
+AVD-AWS-0066
+
+# Networking — intentional design (public subnets for ALB, open egress for ECS)
+AVD-AWS-0102
+AVD-AWS-0105

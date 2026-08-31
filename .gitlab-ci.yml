@@ -1,5 +1,6 @@
 stages:
   - lint
+  - security
   - test
   - build
   - plan
@@ -39,6 +40,30 @@ terraform-lint:
     - terraform -chdir=$TF_ROOT fmt -check -recursive
     - terraform -chdir=$TF_ROOT init -backend=false
     - terraform -chdir=$TF_ROOT validate
+
+# security
+
+checkov-scan:
+  stage: security
+  image:
+    name: bridgecrew/checkov:latest
+    entrypoint: [""]
+  <<: *rules_always
+  script:
+    - checkov -d terraform/ --config-file .checkov.yaml
+    - checkov -d app/ --config-file .checkov.yaml
+
+trivy-scan:
+  stage: security
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  <<: *rules_always
+  script:
+    - trivy config --exit-code 1 --severity HIGH,CRITICAL
+        --ignorefile .trivyignore
+        --skip-dirs .terraform
+        .
 
 # test
 
