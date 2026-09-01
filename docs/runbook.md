@@ -87,7 +87,7 @@ curl -f http://prod-taskflow-alb-1535607476.us-east-1.elb.amazonaws.com/health
 
 ### 2.1 Automated vertical scaling (CPU/memory)
 
-A CloudWatch alarm fires when ECS CPU or memory utilisation exceeds the threshold for a sustained period. The alarm invokes a Lambda function (`prod-taskflow-vertical-scaler`) that:
+A CloudWatch alarm fires when ECS CPU or memory utilisation exceeds the threshold for a sustained period. The alarm invokes a Lambda function (`prod-taskflow-vertical-scaling`) that:
 1. Reads the current task definition's CPU and memory.
 2. Doubles both values (capped at CPU=1024, memory=768 MiB for t3.micro fleets).
 3. Registers a new task definition revision with the higher values.
@@ -97,12 +97,12 @@ A CloudWatch alarm fires when ECS CPU or memory utilisation exceeds the threshol
 
 ```bash
 aws cloudwatch describe-alarm-history \
-  --alarm-name "prod-taskflow-cpu-high" \
+  --alarm-name "prod-taskflow-cpu-utilization-high" \
   --history-item-type "Action" \
   --query 'AlarmHistoryItems[0:5]'
 
 # Check Lambda logs for the scaling function
-aws logs tail /aws/lambda/prod-taskflow-vertical-scaler --since 1h
+aws logs tail /aws/lambda/prod-taskflow-vertical-scaling --since 1h
 ```
 
 **To intervene if vertical scaling misbehaves:**
@@ -129,7 +129,7 @@ aws ecs update-service \
 
 ```bash
 aws cloudwatch set-alarm-state \
-  --alarm-name "prod-taskflow-cpu-high" \
+  --alarm-name "prod-taskflow-cpu-utilization-high" \
   --state-value OK \
   --state-reason "Manual suppression during incident investigation"
 ```
@@ -306,7 +306,7 @@ aws rds describe-db-snapshots \
 aws rds restore-db-instance-from-db-snapshot \
   --db-instance-identifier prod-taskflow-restored \
   --db-snapshot-identifier SNAPSHOT_ID \
-  --db-instance-class db.t3.micro \
+  --db-instance-class db.t4g.micro \
   --no-multi-az \
   --region us-east-1
 
@@ -330,6 +330,6 @@ aws rds restore-db-instance-to-point-in-time \
   --source-db-instance-identifier prod-taskflow \
   --target-db-instance-identifier prod-taskflow-pitr \
   --restore-time 2026-08-31T12:00:00Z \
-  --db-instance-class db.t3.micro \
+  --db-instance-class db.t4g.micro \
   --region us-east-1
 ```

@@ -8,21 +8,21 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- ═══════════════════════════════════════════
+        <!-- ═══════════════════════════════════
              INTERNET  (outside everything)
-             ═══════════════════════════════════════════ -->
+             ═══════════════════════════════════ -->
         <mxCell id="10" value="Internet"
           style="shape=mxgraph.aws4.internet_alt2;fillColor=#232F3E;strokeColor=none;
                  fontColor=#ffffff;fontStyle=1;fontSize=11;
-                 labelBackgroundColor=none;labelPosition=center;
-                 verticalLabelPosition=bottom;verticalAlign=top;html=1;aspect=fixed;"
+                 labelBackgroundColor=none;verticalLabelPosition=bottom;verticalAlign=top;
+                 html=1;aspect=fixed;"
           vertex="1" parent="1">
           <mxGeometry x="20" y="50" width="80" height="80" as="geometry" />
         </mxCell>
 
-        <!-- ═══════════════════════════════════════════
-             AWS REGION container
-             ═══════════════════════════════════════════ -->
+        <!-- ═══════════════════════════════════
+             AWS REGION
+             ═══════════════════════════════════ -->
         <mxCell id="20" value="AWS Region: us-east-1"
           style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];
                  shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_region;grStroke=0;
@@ -34,21 +34,23 @@
           <mxGeometry x="140" y="10" width="1440" height="880" as="geometry" />
         </mxCell>
 
-        <!-- ═══════════════════════════════════════════
-             INTERNET GATEWAY  — outside VPC, inside Region
-             ═══════════════════════════════════════════ -->
+        <!-- ═══════════════════════════════════
+             INTERNET GATEWAY — outside VPC
+             ═══════════════════════════════════ -->
         <mxCell id="30" value="Internet&#xa;Gateway"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#8C4FFF;labelBackgroundColor=#ffffff;
-                 align=center;html=1;fontSize=10;fontStyle=1;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_gateway;"
+                 align=center;html=1;fontSize=10;fontStyle=1;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_gateway;"
           vertex="1" parent="20">
           <mxGeometry x="22" y="55" width="60" height="60" as="geometry" />
         </mxCell>
 
-        <!-- ═══════════════════════════════════════════
-             VPC container
-             ═══════════════════════════════════════════ -->
+        <!-- ═══════════════════════════════════
+             VPC
+             ═══════════════════════════════════ -->
         <mxCell id="40" value="VPC  10.0.0.0/16"
           style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];
                  shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_vpc;grStroke=0;
@@ -60,19 +62,21 @@
           <mxGeometry x="110" y="30" width="960" height="840" as="geometry" />
         </mxCell>
 
-        <!-- Application Load Balancer — at top of VPC, spans both AZs -->
+        <!-- ALB — at top of VPC spanning both AZs -->
         <mxCell id="50" value="Application&#xa;Load Balancer"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#8C4FFF;labelBackgroundColor=#ffffff;
-                 align=center;html=1;fontSize=10;fontStyle=1;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_load_balancer;"
+                 align=center;html=1;fontSize=10;fontStyle=1;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_load_balancer;"
           vertex="1" parent="40">
-          <mxGeometry x="450" y="15" width="60" height="60" as="geometry" />
+          <mxGeometry x="450" y="14" width="60" height="60" as="geometry" />
         </mxCell>
 
-        <!-- ═══════════════════════════════════════════
-             AZ  us-east-1a
-             ═══════════════════════════════════════════ -->
+        <!-- ═══════════════════════════════════
+             AZ us-east-1a
+             ═══════════════════════════════════ -->
         <mxCell id="60" value="us-east-1a"
           style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];
                  shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_availability_zone;grStroke=0;
@@ -96,12 +100,14 @@
           <mxGeometry x="20" y="40" width="410" height="130" as="geometry" />
         </mxCell>
 
-        <!-- NAT Gateway inside public subnet AZ-a -->
+        <!-- NAT Gateway -->
         <mxCell id="62" value="NAT Gateway"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#8C4FFF;labelBackgroundColor=#ffffff;
-                 align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.nat_gateway;"
+                 align=center;html=1;fontSize=10;fontStyle=0;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.nat_gateway;"
           vertex="1" parent="61">
           <mxGeometry x="178" y="35" width="54" height="54" as="geometry" />
         </mxCell>
@@ -118,29 +124,45 @@
           <mxGeometry x="20" y="200" width="410" height="500" as="geometry" />
         </mxCell>
 
-        <!-- ECS / EC2 task in AZ-a -->
-        <mxCell id="64" value="ECS on EC2&#xa;(t3.micro)"
+        <!-- EC2 instance AZ-a -->
+        <mxCell id="64" value="EC2 (t3.micro)"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#ED7100;labelBackgroundColor=#ffffff;
-                 align=center;html=1;fontSize=10;fontStyle=1;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs;"
+                 align=center;html=1;fontSize=10;fontStyle=0;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ec2;"
           vertex="1" parent="63">
-          <mxGeometry x="178" y="50" width="54" height="54" as="geometry" />
+          <mxGeometry x="80" y="50" width="54" height="54" as="geometry" />
         </mxCell>
 
-        <!-- RDS primary in AZ-a -->
-        <mxCell id="65" value="RDS PostgreSQL&#xa;(primary)"
+        <!-- ECS task AZ-a -->
+        <mxCell id="65" value="ECS Task&#xa;(TaskFlow)"
+          style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
+                 fillColor=#ED7100;labelBackgroundColor=#ffffff;
+                 align=center;html=1;fontSize=10;fontStyle=1;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs;"
+          vertex="1" parent="63">
+          <mxGeometry x="276" y="50" width="54" height="54" as="geometry" />
+        </mxCell>
+
+        <!-- RDS primary AZ-a -->
+        <mxCell id="66" value="RDS PostgreSQL&#xa;(primary)"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#C7131F;labelBackgroundColor=#ffffff;
-                 align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds;"
+                 align=center;html=1;fontSize=10;fontStyle=0;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds;"
           vertex="1" parent="63">
-          <mxGeometry x="178" y="350" width="54" height="54" as="geometry" />
+          <mxGeometry x="178" y="340" width="54" height="54" as="geometry" />
         </mxCell>
 
-        <!-- ═══════════════════════════════════════════
-             AZ  us-east-1b
-             ═══════════════════════════════════════════ -->
+        <!-- ═══════════════════════════════════
+             AZ us-east-1b
+             ═══════════════════════════════════ -->
         <mxCell id="70" value="us-east-1b"
           style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];
                  shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_availability_zone;grStroke=0;
@@ -176,33 +198,49 @@
           <mxGeometry x="20" y="200" width="410" height="500" as="geometry" />
         </mxCell>
 
-        <!-- ECS / EC2 task in AZ-b -->
-        <mxCell id="73" value="ECS on EC2&#xa;(t3.micro)"
+        <!-- EC2 instance AZ-b -->
+        <mxCell id="73" value="EC2 (t3.micro)"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#ED7100;labelBackgroundColor=#ffffff;
-                 align=center;html=1;fontSize=10;fontStyle=1;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs;"
+                 align=center;html=1;fontSize=10;fontStyle=0;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ec2;"
           vertex="1" parent="72">
-          <mxGeometry x="178" y="50" width="54" height="54" as="geometry" />
+          <mxGeometry x="80" y="50" width="54" height="54" as="geometry" />
         </mxCell>
 
-        <!-- RDS standby in AZ-b (dashed = standby) -->
-        <mxCell id="74" value="RDS PostgreSQL&#xa;(standby)"
+        <!-- ECS task AZ-b -->
+        <mxCell id="74" value="ECS Task&#xa;(TaskFlow)"
+          style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
+                 fillColor=#ED7100;labelBackgroundColor=#ffffff;
+                 align=center;html=1;fontSize=10;fontStyle=1;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs;"
+          vertex="1" parent="72">
+          <mxGeometry x="276" y="50" width="54" height="54" as="geometry" />
+        </mxCell>
+
+        <!-- RDS standby AZ-b -->
+        <mxCell id="75" value="RDS PostgreSQL&#xa;(standby)"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#C7131F;labelBackgroundColor=#ffffff;opacity=50;
-                 align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds;"
+                 align=center;html=1;fontSize=10;fontStyle=0;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds;"
           vertex="1" parent="72">
-          <mxGeometry x="178" y="350" width="54" height="54" as="geometry" />
+          <mxGeometry x="178" y="340" width="54" height="54" as="geometry" />
         </mxCell>
 
-        <!-- ═══════════════════════════════════════════
-             AWS MANAGED SERVICES  (outside VPC, inside Region)
-             ═══════════════════════════════════════════ -->
+        <!-- ═══════════════════════════════════
+             AWS MANAGED SERVICES  (outside VPC)
+             ═══════════════════════════════════ -->
         <mxCell id="80" value="AWS Managed Services"
           style="swimlane;startSize=35;fontStyle=1;fontSize=12;
                  fillColor=#f5f5f5;strokeColor=#999999;fontColor=#333333;
-                 container=1;collapsible=0;horizontal=1;align=center;"
+                 container=1;collapsible=0;align=center;"
           vertex="1" parent="20">
           <mxGeometry x="1100" y="50" width="300" height="760" as="geometry" />
         </mxCell>
@@ -210,8 +248,10 @@
         <mxCell id="81" value="ECR"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#ED7100;labelBackgroundColor=#f5f5f5;
-                 align=center;html=1;fontSize=11;fontStyle=1;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecr;"
+                 align=center;html=1;fontSize=11;fontStyle=1;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecr;"
           vertex="1" parent="80">
           <mxGeometry x="123" y="60" width="54" height="54" as="geometry" />
         </mxCell>
@@ -219,44 +259,52 @@
         <mxCell id="82" value="Secrets Manager"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#DD344C;labelBackgroundColor=#f5f5f5;
-                 align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.secrets_manager;"
+                 align=center;html=1;fontSize=11;fontStyle=0;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.secrets_manager;"
           vertex="1" parent="80">
-          <mxGeometry x="123" y="170" width="54" height="54" as="geometry" />
+          <mxGeometry x="123" y="180" width="54" height="54" as="geometry" />
         </mxCell>
 
         <mxCell id="83" value="CloudWatch"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#E7157B;labelBackgroundColor=#f5f5f5;
-                 align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch;"
+                 align=center;html=1;fontSize=11;fontStyle=0;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch;"
           vertex="1" parent="80">
-          <mxGeometry x="123" y="295" width="54" height="54" as="geometry" />
+          <mxGeometry x="123" y="310" width="54" height="54" as="geometry" />
         </mxCell>
 
         <mxCell id="84" value="Lambda&#xa;(vertical scaling)"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#ED7100;labelBackgroundColor=#f5f5f5;
-                 align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda_function;"
+                 align=center;html=1;fontSize=11;fontStyle=0;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda_function;"
           vertex="1" parent="80">
-          <mxGeometry x="123" y="420" width="54" height="54" as="geometry" />
+          <mxGeometry x="123" y="440" width="54" height="54" as="geometry" />
         </mxCell>
 
         <mxCell id="85" value="App Auto Scaling"
           style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;
                  fillColor=#E7157B;labelBackgroundColor=#f5f5f5;
-                 align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;
-                 pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_auto_scaling;"
+                 align=center;html=1;fontSize=11;fontStyle=0;
+                 verticalLabelPosition=bottom;verticalAlign=top;
+                 aspect=fixed;pointerEvents=1;
+                 shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.auto_scaling;"
           vertex="1" parent="80">
-          <mxGeometry x="123" y="560" width="54" height="54" as="geometry" />
+          <mxGeometry x="123" y="580" width="54" height="54" as="geometry" />
         </mxCell>
 
-        <!-- ═══════════════════════════════════════════
-             TRAFFIC FLOW ARROWS
-             ═══════════════════════════════════════════ -->
+        <!-- ═══════════════════════════════════
+             ARROWS
+             ═══════════════════════════════════ -->
 
-        <!-- 1. Internet → IGW (user traffic in) -->
+        <!-- 1. Internet → IGW -->
         <mxCell id="100" value=""
           style="edgeStyle=orthogonalEdgeStyle;html=1;
                  exitX=1;exitY=0.5;exitDx=0;exitDy=0;
@@ -266,7 +314,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 2. IGW → ALB (cross VPC boundary — parent=1 for cross-container edge) -->
+        <!-- 2. IGW → ALB -->
         <mxCell id="101" value="HTTP/HTTPS"
           style="edgeStyle=orthogonalEdgeStyle;html=1;
                  strokeColor=#8C4FFF;strokeWidth=2;fontColor=#8C4FFF;fontSize=9;
@@ -275,44 +323,40 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 3. ALB → ECS AZ-a -->
+        <!-- 3. ALB → ECS task AZ-a -->
         <mxCell id="102" value=""
           style="edgeStyle=orthogonalEdgeStyle;html=1;
-                 strokeColor=#ED7100;strokeWidth=2;
-                 endArrow=open;endFill=0;"
-          edge="1" source="50" target="64" parent="1">
+                 strokeColor=#ED7100;strokeWidth=2;endArrow=open;endFill=0;"
+          edge="1" source="50" target="65" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 4. ALB → ECS AZ-b -->
+        <!-- 4. ALB → ECS task AZ-b -->
         <mxCell id="103" value=""
           style="edgeStyle=orthogonalEdgeStyle;html=1;
-                 strokeColor=#ED7100;strokeWidth=2;
-                 endArrow=open;endFill=0;"
-          edge="1" source="50" target="73" parent="1">
+                 strokeColor=#ED7100;strokeWidth=2;endArrow=open;endFill=0;"
+          edge="1" source="50" target="74" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
         <!-- 5. ECS AZ-a → RDS primary -->
         <mxCell id="104" value=""
           style="edgeStyle=orthogonalEdgeStyle;html=1;
-                 strokeColor=#C7131F;strokeWidth=2;
-                 endArrow=open;endFill=0;"
-          edge="1" source="64" target="65" parent="1">
+                 strokeColor=#C7131F;strokeWidth=2;endArrow=open;endFill=0;"
+          edge="1" source="65" target="66" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 6. ECS AZ-a → NAT GW (outbound to ECR / SM / CW) -->
+        <!-- 6. ECS AZ-a → NAT GW (outbound to ECR / Secrets Manager) -->
         <mxCell id="105" value="outbound"
           style="edgeStyle=orthogonalEdgeStyle;html=1;
                  strokeColor=#1A9C3E;strokeWidth=1.5;dashed=1;
-                 fontColor=#1A9C3E;fontSize=9;
-                 endArrow=open;endFill=0;"
-          edge="1" source="64" target="62" parent="1">
+                 fontColor=#1A9C3E;fontSize=9;endArrow=open;endFill=0;"
+          edge="1" source="65" target="62" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 7. CloudWatch CPU alarm → Lambda (vertical scaling trigger) -->
+        <!-- 7. CloudWatch → Lambda (CPU alarm trigger) -->
         <mxCell id="106" value="CPU alarm"
           style="edgeStyle=orthogonalEdgeStyle;html=1;
                  strokeColor=#E7157B;strokeWidth=2;fontColor=#E7157B;fontSize=9;
@@ -321,7 +365,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- 8. Lambda → ECS (update task definition / force redeployment) -->
+        <!-- 8. Lambda → ECS (update task definition / scale up) -->
         <mxCell id="107" value="scale up"
           style="edgeStyle=orthogonalEdgeStyle;html=1;
                  strokeColor=#ED7100;strokeWidth=2;dashed=1;
@@ -329,7 +373,7 @@
                  exitX=0;exitY=0.5;exitDx=0;exitDy=0;
                  entryX=1;entryY=0.5;entryDx=0;entryDy=0;
                  endArrow=open;endFill=0;"
-          edge="1" source="84" target="64" parent="1">
+          edge="1" source="84" target="65" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 

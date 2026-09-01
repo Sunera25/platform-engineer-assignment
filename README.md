@@ -1,36 +1,31 @@
 # TaskFlow — Platform Engineering Assignment
 
-A small internal task management REST service built to demonstrate end-to-end platform engineering: application development, containerization, infrastructure as code, configuration management, CI/CD, and observability on AWS.
+A task management REST API built with Spring Boot and PostgreSQL, deployed on AWS ECS (EC2 launch type) with a full CI/CD pipeline, infrastructure as code, and configuration management.
 
 ---
 
 ## DevOps vs. Platform Engineering
 
-DevOps emerged as a cultural movement to break down the wall between development and operations. In the classic pre-DevOps world, developers threw software "over the fence" to operations teams, who were responsible for running it. DevOps collapsed that boundary by embedding operations thinking into development teams and automating the repetitive work (testing, building, deploying) that used to require specialist handoffs. A DevOps team typically owns a single product or service from code commit through production operation — they write the application, set up the CI/CD pipeline, manage alerts, and respond to incidents. The scope is deep but narrow.
+DevOps is about breaking down the wall between development and operations so the same team builds and runs the software. A DevOps team owns everything for their service — the code, the pipeline, the on-call rotation.
 
-Platform Engineering is a natural evolution of DevOps at scale. Once an organization has many product teams each doing DevOps, a problem emerges: every team re-invents the same infrastructure patterns — container orchestration, service meshes, secrets management, cost tagging, compliance guardrails. Each team must become an expert in AWS, Kubernetes, Terraform, and a dozen other tools just to run their service. Platform Engineering addresses this by creating a dedicated team (the platform team) that builds and operates a self-service Internal Developer Platform (IDP) that product teams consume. Instead of every team managing ECS task definitions, the platform team provides a golden-path template. Instead of every team wiring their own CloudWatch alarms, the platform team provides a pre-built observability module.
+Platform Engineering is what happens when you have a lot of teams each doing DevOps and they all keep solving the same problems. Every team ends up writing similar Terraform, setting up the same CloudWatch alarms, and figuring out the same ECS patterns independently. A platform team builds those shared tools and patterns once, and other teams just consume them. The key difference is who the customer is — a platform engineer's customer is other developers, not end users.
 
-The key distinction is the customer: a DevOps engineer's customer is the end user of the product; a platform engineer's customer is the developer building that product. Platform engineering optimizes for developer experience (DX), cognitive load reduction, and organizational consistency. It treats infrastructure as a product with its own SLOs, documentation, and versioned releases.
-
-This assignment sits at the boundary of both disciplines: it builds one service (DevOps), but does so with the platform engineering tools and practices (Terraform modules, Ansible roles, pipeline templates, runbooks) that would form the foundation of a larger IDP.
+This project is built end-to-end like a DevOps project (one service, one team), but it uses platform-style patterns — reusable Terraform modules, an Ansible role, a pipeline with security gates — that would form the foundation for a larger internal developer platform.
 
 ---
 
-## The Shift to DevSecOps
+## DevSecOps
 
-Traditional security in software organizations was a gate at the end of the development cycle — a security team reviewed software shortly before release, found issues, and handed back a list of findings. This model is too slow for organizations shipping multiple times a day and incompatible with the continuous delivery that DevOps enabled.
+The traditional approach was to have a security team review everything near the end before release. That doesn't scale when you're shipping multiple times a day.
 
-DevSecOps shifts security left — integrating it into every stage of the development lifecycle rather than applying it at the end:
+DevSecOps moves security checks into the pipeline so they run automatically on every commit, not after it:
 
-- **In planning:** threat modelling and security requirements defined alongside functional requirements.
-- **In development:** static application security testing (SAST) in the IDE, pre-commit hooks that scan for secrets, dependency vulnerability scanning against CVE databases.
-- **In CI/CD:** automated security gates (Checkov for infrastructure misconfigurations, Trivy for container CVEs, Gitleaks for accidentally committed credentials) that fail the pipeline before any insecure code can reach production.
-- **In deployment:** infrastructure is immutable and versioned; secrets are never in environment files or source code but injected at runtime from a secrets manager.
-- **In operations:** runtime threat detection (GuardDuty, CloudTrail alerts), automated patching (yum-cron automatic security updates on EC2 hosts), and least-privilege IAM everywhere.
+- **Checkov** scans the Terraform for IAM misconfigurations and insecure resource configs before they're ever applied
+- **Trivy** scans the container image for known CVEs before it's pushed to ECR
+- **Gitleaks** checks for accidentally committed secrets
+- Secrets are never in source code or environment files — they're stored in AWS Secrets Manager and injected into ECS tasks at runtime
 
-The `security` stage in this project's `.gitlab-ci.yml` demonstrates DevSecOps: Checkov, Trivy, and Gitleaks run automatically on every commit and merge request. A single critical CVE in the container image or a mismatched IAM policy fails the build before any human reviewer needs to look at it.
-
-DevSecOps matters because the cost of finding a vulnerability in CI is orders of magnitude lower than finding it in production, and because manual security reviews cannot scale to the velocity of modern software delivery.
+If a check fails, the pipeline fails. Nothing insecure makes it through without someone explicitly fixing it first. Catching a problem in CI is much cheaper than finding it in production.
 
 ---
 
@@ -40,12 +35,12 @@ DevSecOps matters because the cost of finding a vulnerability in CI is orders of
 
 - Java 17, Maven 3.9+
 - Docker
-- PostgreSQL (or Docker to run one)
+- PostgreSQL (or run one in Docker)
 
-### Run the application locally
+### Run the application
 
 ```bash
-# Start PostgreSQL in Docker
+# Start PostgreSQL
 docker run -d \
   --name taskflow-pg \
   -e POSTGRES_DB=taskflow \
@@ -54,19 +49,21 @@ docker run -d \
   -p 5432:5432 \
   postgres:15-alpine
 
-# Run the Spring Boot app
+# Run the app
 cd app
 mvn spring-boot:run
 ```
 
-The API is available at `http://localhost:8080`. API documentation is at `http://localhost:8080/swagger-ui.html`.
+API: `http://localhost:8080` — Swagger UI: `http://localhost:8080/swagger-ui.html`
 
 ### Run tests
 
 ```bash
 cd app
-mvn verify   # runs unit tests, integration tests (Testcontainers), and JaCoCo coverage gate
+mvn verify
 ```
+
+This runs unit tests, integration tests (Testcontainers spins up a real Postgres), and the JaCoCo coverage gate.
 
 ### Build the Docker image
 
@@ -82,19 +79,17 @@ docker run -p 8080:8080 \
 
 ---
 
-## Reproducing the Full Deployment from a Clean AWS Account
+## Deploying from a Clean AWS Account
 
 ### Prerequisites
 
-- AWS CLI configured with an IAM user/role that has admin access (to bootstrap; after bootstrap, permissions are scoped by IAM modules).
-- Terraform 1.7+ installed.
-- Ansible 2.15+ with `amazon.aws` and `ansible.posix` collections.
-- GitLab CI/CD variables configured (see below).
+- AWS CLI configured with admin access (needed to bootstrap — permissions are tightened by IAM modules after)
+- Terraform 1.7+
+- Ansible 2.15+ with `amazon.aws` and `ansible.posix` collections
 
 ### Step 1 — Bootstrap remote state
 
 ```bash
-# Create S3 bucket for Terraform state (once, manually or via a bootstrap script)
 aws s3api create-bucket \
   --bucket taskflow-terraform-state-<account-id> \
   --region us-east-1
@@ -103,7 +98,6 @@ aws s3api put-bucket-versioning \
   --bucket taskflow-terraform-state-<account-id> \
   --versioning-configuration Status=Enabled
 
-# Create DynamoDB lock table
 aws dynamodb create-table \
   --table-name taskflow-terraform-locks \
   --attribute-definitions AttributeName=LockID,AttributeType=S \
@@ -112,7 +106,7 @@ aws dynamodb create-table \
   --region us-east-1
 ```
 
-Update `terraform/envs/prod/backend.tf` with the actual bucket name and lock table.
+Update `terraform/envs/prod/backend.tf` with the actual bucket name.
 
 ### Step 2 — Provision infrastructure
 
@@ -123,7 +117,7 @@ terraform plan -var="image_tag=initial"
 terraform apply -var="image_tag=initial"
 ```
 
-This creates the VPC, subnets, NAT gateway, ALB, ECS cluster (EC2 ASG), RDS instance, ECR repository, IAM roles, CloudWatch log groups, and the vertical scaling Lambda.
+This creates the VPC, subnets, NAT gateway, ALB, ECS cluster, RDS, ECR, IAM roles, and the vertical scaling Lambda.
 
 ### Step 3 — Configure EC2 hosts
 
@@ -134,68 +128,60 @@ ansible-galaxy collection install -r requirements.yml
 ansible-playbook site.yml
 ```
 
-The dynamic inventory picks up instances by the `Project=taskflow` and `Environment=prod` tags.
+The dynamic inventory finds the ECS hosts by their `Project=taskflow` and `Environment=prod` tags.
 
-### Step 4 — Build and push the application image
+### Step 4 — Build and push the image
 
 ```bash
-# Authenticate to ECR
 aws ecr get-login-password --region us-east-1 | \
   docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
 
-# Build and push
 IMAGE_TAG=$(git rev-parse --short HEAD)
-docker build -t <account-id>.dkr.ecr.us-east-1.amazonaws.com/taskflow:$IMAGE_TAG app/
-docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/taskflow:$IMAGE_TAG
+docker build -t <account-id>.dkr.ecr.us-east-1.amazonaws.com/prod-taskflow:$IMAGE_TAG app/
+docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/prod-taskflow:$IMAGE_TAG
 ```
 
-### Step 5 — Update task definition and deploy
+### Step 5 — Deploy
 
 ```bash
-# Apply with the real image tag
 cd terraform/envs/prod
 terraform apply -var="image_tag=$IMAGE_TAG"
 
-# Force new deployment
 aws ecs update-service \
-  --cluster taskflow-prod \
-  --service taskflow-service \
-  --force-new-deployment
+  --cluster prod-taskflow-cluster \
+  --service prod-taskflow-service \
+  --force-new-deployment \
+  --region us-east-1
 ```
 
 ### Step 6 — Verify
 
 ```bash
-# Get the ALB DNS name
-ALB_DNS=$(aws elbv2 describe-load-balancers \
-  --names taskflow-alb \
-  --query 'LoadBalancers[0].DNSName' --output text)
-
-curl http://$ALB_DNS/health
+curl http://$(terraform output -raw alb_dns_name)/health
 # Expected: {"status":"UP"}
 ```
 
-### GitLab CI/CD variables (masked and protected)
+### GitLab CI/CD variables required
 
 | Variable | Description |
 |----------|-------------|
-| `AWS_ACCESS_KEY_ID` | IAM access key for CI (use a scoped CI role in production) |
+| `AWS_ACCESS_KEY_ID` | IAM access key for CI |
 | `AWS_SECRET_ACCESS_KEY` | IAM secret key |
-| `AWS_DEFAULT_REGION` | e.g. `us-east-1` |
-| `ECR_REGISTRY` | e.g. `<account-id>.dkr.ecr.us-east-1.amazonaws.com` |
-| `ECR_REPOSITORY` | `taskflow` |
-| `ECS_CLUSTER_NAME` | `taskflow-prod` |
-| `ALB_DNS_NAME` | Output from `terraform output alb_dns_name` |
+| `AWS_DEFAULT_REGION` | `us-east-1` |
+| `ECR_REGISTRY` | `<account-id>.dkr.ecr.us-east-1.amazonaws.com` |
+| `ECR_REPOSITORY` | `prod-taskflow` |
+| `ECS_CLUSTER_NAME` | `prod-taskflow-cluster` |
+| `ALB_DNS_NAME` | from `terraform output alb_dns_name` |
 
 ---
 
 ## API Reference
 
-Full OpenAPI spec: [`app/openapi.yaml`](app/openapi.yaml)
+Full spec: [`app/openapi.yaml`](app/openapi.yaml)
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/health` | Health check (used by ALB and ECS) |
+| GET | `/health` | Health check |
 | GET | `/api/tasks` | List all tasks |
 | POST | `/api/tasks` | Create a task |
 | GET | `/api/tasks/{id}` | Get a task by ID |
