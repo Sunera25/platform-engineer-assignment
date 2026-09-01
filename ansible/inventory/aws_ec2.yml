@@ -1,6 +1,6 @@
 plugin: amazon.aws.aws_ec2
 regions:
-  - "{{ lookup('env', 'AWS_DEFAULT_REGION') | default('us-east-1') }}"
+  - us-east-1
 
 filters:
   tag:Project: taskflow
@@ -8,7 +8,7 @@ filters:
   instance-state-name: running
 
 keyed_groups:
-  - key: tags.Role
+  - key: tags.Component
     prefix: role
   - key: tags.Environment
     prefix: env
