@@ -154,19 +154,24 @@ ansible-configure:
     - echo "=========================================="
     - echo "Installing dependencies..."
     - pip install ansible boto3 botocore
-    - echo "✓ Dependencies installed successfully"
+    - echo "[OK] Dependencies installed successfully"
     - echo "Installing Ansible collections..."
     - ansible-galaxy collection install -r ansible/requirements.yml
-    - echo "✓ Ansible collections installed"
+    - echo "[OK] Ansible collections installed"
     - echo "Verifying AWS credentials..."
-    - if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then echo "⚠ WARNING: AWS credentials not configured"; else echo "✓ AWS credentials available"; fi
+    - test -n "$AWS_ACCESS_KEY_ID" && echo "[OK] AWS credentials available" || echo "[WARNING] AWS credentials not configured"
     - echo "=========================================="
   script:
     - echo "Starting Ansible playbook execution..."
     - ansible-playbook -i ansible/inventory/aws_ec2.yml -vv ansible/site.yml
     - RESULT=$?
     - echo "=========================================="
-    - if [ $RESULT -eq 0 ]; then echo "✓ Ansible playbook completed SUCCESSFULLY"; else echo "✗ Ansible playbook FAILED with exit code $RESULT"; fi
+    - |
+      if [ $RESULT -eq 0 ]; then
+        echo "[SUCCESS] Ansible playbook completed successfully"
+      else
+        echo "[FAILED] Ansible playbook failed with exit code $RESULT"
+      fi
     - echo "=========================================="
     - exit $RESULT
   environment:
