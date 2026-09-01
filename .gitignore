@@ -51,3 +51,4 @@ node_modules/
 
 # Local files directory (IAM policies, keys — never commit)
 files/
+.trivyignore

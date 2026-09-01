@@ -1,0 +1,9 @@
+{
+  "AlarmName": "prod-taskflow-cpu-utilization-high",
+  "StateValue": "ALARM",
+  "StateReason": "Manual trigger for vertical scaling evidence capture",
+  "StateUpdatedTimestamp": "2026-09-01 14:00:58.911000+05:30",
+  "AlarmDescription": "Triggers vertical scaling Lambda when ECS CPU exceeds threshold",
+  "Threshold": 70.0,
+  "ComparisonOperator": "GreaterThanOrEqualToThreshold"
+}

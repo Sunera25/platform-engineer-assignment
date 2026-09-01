@@ -1,0 +1,24 @@
+{
+  "captured_at": "2026-09-01T08:30:57.747217+00:00",
+  "service": {
+    "cluster": "prod-taskflow-cluster",
+    "service": "prod-taskflow-service",
+    "taskDefinition": "arn:aws:ecs:us-east-1:225076308692:task-definition/prod-taskflow:17",
+    "desiredCount": 1,
+    "runningCount": 1
+  },
+  "taskDefinition": {
+    "family": "prod-taskflow",
+    "revision": 17,
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:225076308692:task-definition/prod-taskflow:17",
+    "cpu": null,
+    "memory": null,
+    "containerDefinitions": [
+      {
+        "name": "taskflow-app",
+        "cpu": 512,
+        "memory": 512
+      }
+    ]
+  }
+}

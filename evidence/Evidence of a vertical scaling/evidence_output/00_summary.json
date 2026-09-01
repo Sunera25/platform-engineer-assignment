@@ -1,0 +1,43 @@
+{
+  "evidence_type": "Vertical scaling event",
+  "captured_at": "2026-09-01T08:31:28.293812+00:00",
+  "alarm": {
+    "AlarmName": "prod-taskflow-cpu-utilization-high",
+    "StateValue": "ALARM",
+    "StateReason": "Manual trigger for vertical scaling evidence capture",
+    "StateUpdatedTimestamp": "2026-09-01 14:00:58.911000+05:30",
+    "AlarmDescription": "Triggers vertical scaling Lambda when ECS CPU exceeds threshold",
+    "Threshold": 70.0,
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold"
+  },
+  "before": {
+    "family": "prod-taskflow",
+    "revision": 17,
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:225076308692:task-definition/prod-taskflow:17",
+    "cpu": null,
+    "memory": null,
+    "containerDefinitions": [
+      {
+        "name": "taskflow-app",
+        "cpu": 512,
+        "memory": 512
+      }
+    ]
+  },
+  "after": {
+    "family": "prod-taskflow",
+    "revision": 24,
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:225076308692:task-definition/prod-taskflow:24",
+    "cpu": "512",
+    "memory": "768",
+    "containerDefinitions": [
+      {
+        "name": "taskflow-app",
+        "cpu": 512,
+        "memory": 768
+      }
+    ]
+  },
+  "lambda_log_lines": 10,
+  "scaling_occurred": true
+}

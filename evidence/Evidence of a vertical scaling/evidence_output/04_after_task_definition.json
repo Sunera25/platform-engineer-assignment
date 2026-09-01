@@ -1,0 +1,38 @@
+{
+  "captured_at": "2026-09-01T08:31:28.292892+00:00",
+  "service": {
+    "taskDefinition": "arn:aws:ecs:us-east-1:225076308692:task-definition/prod-taskflow:24",
+    "desiredCount": 1,
+    "runningCount": 0,
+    "deployments": [
+      {
+        "id": "ecs-svc/1295692350105876375",
+        "status": "PRIMARY",
+        "taskDefinition": "arn:aws:ecs:us-east-1:225076308692:task-definition/prod-taskflow:24",
+        "runningCount": 0,
+        "createdAt": "2026-09-01 14:01:00.964000+05:30"
+      },
+      {
+        "id": "ecs-svc/7478549647431783454",
+        "status": "ACTIVE",
+        "taskDefinition": "arn:aws:ecs:us-east-1:225076308692:task-definition/prod-taskflow:17",
+        "runningCount": 0,
+        "createdAt": "2026-09-01 13:20:38.200000+05:30"
+      }
+    ]
+  },
+  "taskDefinition": {
+    "family": "prod-taskflow",
+    "revision": 24,
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:225076308692:task-definition/prod-taskflow:24",
+    "cpu": "512",
+    "memory": "768",
+    "containerDefinitions": [
+      {
+        "name": "taskflow-app",
+        "cpu": 512,
+        "memory": 768
+      }
+    ]
+  }
+}

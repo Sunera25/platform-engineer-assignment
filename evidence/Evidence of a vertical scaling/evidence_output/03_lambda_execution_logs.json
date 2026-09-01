@@ -1,0 +1,47 @@
+{
+  "log_group": "/aws/lambda/prod-taskflow-vertical-scaling",
+  "queried_from": "2026-09-01T08:26:24.380000+00:00",
+  "event_count": 10,
+  "events": [
+    {
+      "timestamp": 1788251459176,
+      "message": "INIT_START Runtime Version: python:3.11.mainlinev2.v31\tRuntime Version ARN: arn:aws:lambda:us-east-1::runtime:393e50a9c278329bf9672cf2702d851f3d3678eead7c8dbe43ff2d33d6c8d6af"
+    },
+    {
+      "timestamp": 1788251459529,
+      "message": "[INFO]\t2026-09-01T08:30:59.529Z\t\tFound credentials in environment variables."
+    },
+    {
+      "timestamp": 1788251459672,
+      "message": "START RequestId: 7c93d274-5d2e-4d38-9a5b-e08ec1b00e39 Version: $LATEST"
+    },
+    {
+      "timestamp": 1788251459672,
+      "message": "[INFO]\t2026-09-01T08:30:59.672Z\t7c93d274-5d2e-4d38-9a5b-e08ec1b00e39\tReceived CloudWatch Alarm event: {\"source\": \"aws.cloudwatch\", \"alarmArn\": \"arn:aws:cloudwatch:us-east-1:225076308692:alarm:prod-taskflow-cpu-utilization-high\", \"accountId\": \"225076308692\", \"time\": \"2026-09-01T08:30:58.911+0000\", \"region\": \"us-east-1\", \"alarmData\": {\"alarmName\": \"prod-taskflow-cpu-utilization-high\", \"state\": {\"value\": \"ALARM\", \"reason\": \"Manual trigger for vertical scaling evidence capture\", \"timestamp\": \"2026-09-01T08:30:58.911+0000\"}, \"previousState\": {\"value\": \"OK\", \"reason\": \"Threshold Crossed: 1 datapoint [0.31582733914256095 (31/08/26 17:35:00)] was not greater than or equal to the threshold (70.0).\", \"reasonData\": \"{\\\"version\\\":\\\"1.0\\\",\\\"queryDate\\\":\\\"2026-08-31T17:38:57.183+0000\\\",\\\"startDate\\\":\\\"2026-08-31T17:34:00.000+0000\\\",\\\"statistic\\\":\\\"Average\\\",\\\"period\\\":60,\\\"recentDatapoints\\\":[214.66018844793237,0.31582733914256095],\\\"threshold\\\":70.0,\\\"evaluatedDatapoints\\\":[{\\\"timestamp\\\":\\\"2026-08-31T17:35:00.000+0000\\\",\\\"sampleCount\\\":1.0,\\\"value\\\":0.31582733914256095}]}\", \"timestamp\": \"2026-08-31T17:38:57.184+0000\"}, \"configuration\": {\"description\": \"Triggers vertical scaling Lambda when ECS CPU exceeds threshold\", \"metrics\": [{\"id\": \"1cd02be2-4f44-6377-917c-7fe83199e3f0\", \"metricStat\": {\"metric\": {\"namespace\": \"AWS/ECS\", \"name\": \"CPUUtilization\", \"dimensions\": {\"ServiceName\": \"prod-taskflow-service\", \"ClusterName\": \"prod-taskflow-cluster\"}}, \"period\": 60, \"stat\": \"Average\"}, \"returnData\": true}]}}}"
+    },
+    {
+      "timestamp": 1788251460422,
+      "message": "[INFO]\t2026-09-01T08:31:00.422Z\t7c93d274-5d2e-4d38-9a5b-e08ec1b00e39\tActive Task Definition ARN: arn:aws:ecs:us-east-1:225076308692:task-definition/prod-taskflow:17"
+    },
+    {
+      "timestamp": 1788251460499,
+      "message": "[INFO]\t2026-09-01T08:31:00.499Z\t7c93d274-5d2e-4d38-9a5b-e08ec1b00e39\tScaling from CPU=256 Memory=512 to CPU=512 Memory=768"
+    },
+    {
+      "timestamp": 1788251460567,
+      "message": "[INFO]\t2026-09-01T08:31:00.567Z\t7c93d274-5d2e-4d38-9a5b-e08ec1b00e39\tRegistered new Task Definition: arn:aws:ecs:us-east-1:225076308692:task-definition/prod-taskflow:24"
+    },
+    {
+      "timestamp": 1788251461061,
+      "message": "[INFO]\t2026-09-01T08:31:01.061Z\t7c93d274-5d2e-4d38-9a5b-e08ec1b00e39\tForced redeployment: arn:aws:ecs:us-east-1:225076308692:service/prod-taskflow-cluster/prod-taskflow-service"
+    },
+    {
+      "timestamp": 1788251461101,
+      "message": "END RequestId: 7c93d274-5d2e-4d38-9a5b-e08ec1b00e39"
+    },
+    {
+      "timestamp": 1788251461101,
+      "message": "REPORT RequestId: 7c93d274-5d2e-4d38-9a5b-e08ec1b00e39\tDuration: 1428.58 ms\tBilled Duration: 1921 ms\tMemory Size: 128 MB\tMax Memory Used: 91 MB\tInit Duration: 491.91 ms"
+    }
+  ]
+}
