@@ -4,7 +4,7 @@ info:
   description: Internal task management REST service
   version: "1.0.0"
 servers:
-  - url: prod-taskflow-alb-1535607476.us-east-1.elb.amazonaws.com
+  - url: http://prod-taskflow-alb-1535607476.us-east-1.elb.amazonaws.com/health
     description: Local development
 
 tags:
