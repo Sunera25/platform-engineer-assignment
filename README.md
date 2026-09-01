@@ -8,7 +8,7 @@ A task management REST API built with Spring Boot and PostgreSQL, deployed on AW
 
 DevOps is about breaking down the wall between development and operations so the same team builds and runs the software. A DevOps team owns everything for their service. The code, the pipeline, the on call rotation.
 
-Platform Engineering is what happens when you have a lot of teams each doing DevOps and they all keep solving the same problems. Every team ends up writing similar Terraform, setting up the same CloudWatch alarms, and figuring out the same ECS patterns independently. A platform team builds those shared tools and patterns once, and other teams just consume them. The key difference is who the customer is — a platform engineer's customer is other developers, not end users.
+Platform Engineering is what happens when you have a lot of teams each doing DevOps and they all keep solving the same problems. Every team ends up writing similar Terraform, setting up the same CloudWatch alarms, and figuring out the same ECS patterns independently. A platform team builds those shared tools and patterns once, and other teams just consume them. The key difference is who the customer is, a platform engineer's customer is other developers, not end users.
 
 This project is built end to end like a DevOps project (one service, one team), but it uses platform style patterns reusable Terraform modules, an Ansible role, a pipeline with security gates, that would form the foundation for a larger internal developer platform.
 
