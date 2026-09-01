@@ -6,11 +6,11 @@ A task management REST API built with Spring Boot and PostgreSQL, deployed on AW
 
 ## DevOps vs. Platform Engineering
 
-DevOps is about breaking down the wall between development and operations so the same team builds and runs the software. A DevOps team owns everything for their service — the code, the pipeline, the on-call rotation.
+DevOps is about breaking down the wall between development and operations so the same team builds and runs the software. A DevOps team owns everything for their service. The code, the pipeline, the on call rotation.
 
 Platform Engineering is what happens when you have a lot of teams each doing DevOps and they all keep solving the same problems. Every team ends up writing similar Terraform, setting up the same CloudWatch alarms, and figuring out the same ECS patterns independently. A platform team builds those shared tools and patterns once, and other teams just consume them. The key difference is who the customer is — a platform engineer's customer is other developers, not end users.
 
-This project is built end-to-end like a DevOps project (one service, one team), but it uses platform-style patterns — reusable Terraform modules, an Ansible role, a pipeline with security gates — that would form the foundation for a larger internal developer platform.
+This project is built end to end like a DevOps project (one service, one team), but it uses platform style patterns reusable Terraform modules, an Ansible role, a pipeline with security gates, that would form the foundation for a larger internal developer platform.
 
 ---
 
@@ -23,7 +23,7 @@ DevSecOps moves security checks into the pipeline so they run automatically on e
 - **Checkov** scans the Terraform for IAM misconfigurations and insecure resource configs before they're ever applied
 - **Trivy** scans the container image for known CVEs before it's pushed to ECR
 - **Gitleaks** checks for accidentally committed secrets
-- Secrets are never in source code or environment files — they're stored in AWS Secrets Manager and injected into ECS tasks at runtime
+- Secrets are never in source code or environment files. They're stored in AWS Secrets Manager and injected into ECS tasks at runtime
 
 If a check fails, the pipeline fails. Nothing insecure makes it through without someone explicitly fixing it first. Catching a problem in CI is much cheaper than finding it in production.
 
