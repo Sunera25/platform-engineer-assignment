@@ -144,11 +144,31 @@ ansible-configure:
   stage: configure
   image: python:3.11-slim
   <<: *rules_default_branch_only
+  variables:
+    AWS_DEFAULT_REGION: "us-east-1"
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
   before_script:
+    - echo "=========================================="
+    - echo "Starting Ansible Configuration Job"
+    - echo "=========================================="
+    - echo "Installing dependencies..."
     - pip install ansible boto3 botocore
+    - echo "✓ Dependencies installed successfully"
+    - echo "Installing Ansible collections..."
     - ansible-galaxy collection install -r ansible/requirements.yml
+    - echo "✓ Ansible collections installed"
+    - echo "Verifying AWS credentials..."
+    - if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then echo "⚠ WARNING: AWS credentials not configured"; else echo "✓ AWS credentials available"; fi
+    - echo "=========================================="
   script:
-    - ansible-playbook ansible/site.yml
+    - echo "Starting Ansible playbook execution..."
+    - ansible-playbook -i ansible/inventory/aws_ec2.yml -vv ansible/site.yml
+    - RESULT=$?
+    - echo "=========================================="
+    - if [ $RESULT -eq 0 ]; then echo "✓ Ansible playbook completed SUCCESSFULLY"; else echo "✗ Ansible playbook FAILED with exit code $RESULT"; fi
+    - echo "=========================================="
+    - exit $RESULT
   environment:
     name: production
 
